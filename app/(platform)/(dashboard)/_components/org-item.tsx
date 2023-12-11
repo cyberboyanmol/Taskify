@@ -11,6 +11,7 @@ import Image from "next/image";
 import { Activity, Layout, Settings, CreditCard } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 export type Organization = {
   id: string;
   name: string;
@@ -101,5 +102,16 @@ export const OrgItem = ({
         })}
       </AccordionContent>
     </AccordionItem>
+  );
+};
+
+OrgItem.Skeleton = function SkeletonOrgItem() {
+  return (
+    <div className="flex items-center gap-x-2">
+      <div className="w-10 h-10 realtive shrink-0">
+        <Skeleton className="h-full w-full relative" />
+      </div>
+      <Skeleton className="h-10 w-full" />
+    </div>
   );
 };
