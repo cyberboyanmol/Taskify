@@ -1,9 +1,45 @@
+import { db } from "@/lib/prisma-client";
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 import React from "react";
+import { ListContainer } from "./_components/list-container";
 
-const BoardIdPage = () => {
+interface BoardIdPageProps {
+  params: {
+    boardId: string[];
+  };
+}
 
+const BoardIdPage = async ({ params }: BoardIdPageProps) => {
+  const { orgId } = auth();
 
-  return <div>BoardPage</div>;
+  if (!orgId) {
+    redirect("/select-org");
+  }
+
+  const lists = await db.list.findMany({
+    where: {
+      boardId: params.boardId[0],
+      board: {
+        orgId,
+      },
+    },
+    include: {
+      cards: {
+        orderBy: {
+          order: "asc",
+        },
+      },
+    },
+    orderBy: {
+      order: "asc",
+    },
+  });
+  return (
+    <div className="h-full p-4 overflow-x-auto">
+      <ListContainer boardId={params.boardId[0]} data={lists} />
+    </div>
+  );
 };
 
 export default BoardIdPage;

@@ -4,7 +4,7 @@ import { Toaster } from "sonner";
 const PlatformLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <ClerkProvider>
-      <Toaster />
+      <Toaster expand={true} richColors />
       {children}
     </ClerkProvider>
   );

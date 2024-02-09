@@ -1,11 +1,11 @@
 "use server";
+
 import { auth } from "@clerk/nextjs";
 import { InputType, ReturnType } from "./types";
 import { db } from "@/lib/prisma-client";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { CreateSafeAction } from "@/lib/create-safe-action";
-import { DeleteBoard } from "./schema";
+import { UpdateList } from "./schema";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId, orgId } = auth();
@@ -16,25 +16,31 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     };
   }
 
-  const { id } = data;
-
-  let board;
-
+  const { title, id, boardId } = data;
+  let list;
   try {
-    board = await db.board.delete({
+    list = await db.list.update({
       where: {
         id,
-        orgId,
+        boardId,
+        board: {
+          orgId,
+        },
+      },
+      data: {
+        title,
       },
     });
   } catch (error) {
     return {
-      error: "Failed to Delete Board.",
+      error: "Failed to update list.",
     };
   }
 
-  revalidatePath(`/organization/${orgId}`);
-  redirect(`/organization/${orgId}`);
+  revalidatePath(`/b/${boardId}`);
+  return {
+    data: list,
+  };
 };
 
-export const deleteBoard = CreateSafeAction(DeleteBoard, handler);
+export const updateList = CreateSafeAction(UpdateList, handler);
