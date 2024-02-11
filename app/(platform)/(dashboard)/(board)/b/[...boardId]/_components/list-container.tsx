@@ -145,11 +145,7 @@ export const ListContainer = ({ boardId, data }: ListContainerProps) => {
               return <ListItem key={list.id} index={index} data={list} />;
             })}
             {provided.placeholder}
-            {/* {!isEmpty(provided.placeholder) && snapshot.isDraggingOver && (
-              <div className="placeholder" style={{
-                top:
-              }} />
-            )} */}
+
             <ListFrom />
             <div className="flex-shrink-0 w-1" />
           </ol>
