@@ -5,6 +5,8 @@ import { db } from "@/lib/prisma-client";
 import { revalidatePath } from "next/cache";
 import { CreateSafeAction } from "@/lib/create-safe-action";
 import { UpdateCardOrder } from "./schema";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId, orgId } = auth();
@@ -14,9 +16,17 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       error: "Unauthorized",
     };
   }
-  const { items, boardId } = data;
+  const {
+    items,
+    boardId,
+    previousListTitle,
+    newListTitle,
+    movedCardId,
+    movedCardTitle,
+  } = data;
   let updatedCards;
 
+  console.log(previousListTitle, newListTitle, movedCardId);
   try {
     const transaction = items.map((card) =>
       db.card.update({
@@ -37,6 +47,20 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     );
 
     updatedCards = await db.$transaction(transaction);
+    // previoud list title and new list title
+
+    if (movedCardId) {
+      await createAuditLog({
+        entityId: movedCardId as string,
+        entityTitle: [
+          movedCardTitle,
+          newListTitle,
+          previousListTitle,
+        ] as string[],
+        action: ACTION.MOVED,
+        entityType: ENTITY_TYPE.CARD,
+      });
+    }
   } catch (error) {
     return {
       error: "Failed to reorder.",

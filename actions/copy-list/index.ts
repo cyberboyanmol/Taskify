@@ -6,6 +6,8 @@ import { db } from "@/lib/prisma-client";
 import { revalidatePath } from "next/cache";
 import { CreateSafeAction } from "@/lib/create-safe-action";
 import { CopyList } from "./schema";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId, orgId } = auth();
@@ -59,6 +61,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
               title: card.title,
               description: card.description,
               order: card.order,
+              parentCardId: card.id,
             })),
           },
         },
@@ -66,6 +69,26 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       include: {
         cards: true,
       },
+    });
+
+    await createAuditLog({
+      entityId: list.id,
+      entityType: ENTITY_TYPE.LIST,
+      entityTitle: [list.title, listToCopy.title],
+      action: ACTION.COPIED,
+    });
+
+    // new List Name
+    const newListTitle = list.title;
+
+    // creating the logs for all new copied cards
+    list.cards.map(async (card) => {
+      await createAuditLog({
+        entityId: card.id,
+        entityType: ENTITY_TYPE.CARD,
+        action: ACTION.COPIED,
+        entityTitle: [card.title, card.parentCardId as string, newListTitle],
+      });
     });
   } catch (error) {
     return {

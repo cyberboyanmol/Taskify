@@ -128,6 +128,10 @@ export const ListContainer = ({ boardId, data }: ListContainerProps) => {
         executeUpdateCardOrder({
           boardId,
           items: destinationList.cards,
+          previousListTitle: sourceList.title,
+          movedCardId: movedCard.id,
+          newListTitle: destinationList.title,
+          movedCardTitle: movedCard.title,
         });
       }
     }

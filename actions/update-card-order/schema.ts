@@ -10,4 +10,8 @@ export const UpdateCardOrder = z.object({
     })
   ),
   boardId: z.string(),
+  previousListTitle: z.optional(z.string()),
+  newListTitle: z.optional(z.string()),
+  movedCardId: z.optional(z.string()),
+  movedCardTitle: z.optional(z.string()),
 });
