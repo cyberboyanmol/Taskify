@@ -45,10 +45,11 @@ export const GenerateLogMessageForCard = ({
 
 export const GenerateLogMessage = ({ log }: GenerateLogMessageForCardProps) => {
   const router = useRouter();
+  const onOpen = useCardModalStore((state) => state.onOpen);
   const { action, entityTitle, entityType } = log;
 
+  // Board logs template
   if (entityType === ENTITY_TYPE.BOARD) {
-    // Board template
     switch (action) {
       case ACTION.CREATE:
         const [boardTitle, boardId] = entityTitle;
@@ -103,7 +104,7 @@ export const GenerateLogMessage = ({ log }: GenerateLogMessageForCardProps) => {
       const [ListTitle, boardTitle, boardId] = entityTitle;
       return (
         <>
-          create {entityType.toLowerCase()} "{ListTitle}" within the
+          create {entityType.toLowerCase()} &#34;{ListTitle}&#34; within the
           <span
             onClick={() => router.push(`/b/${boardId}`)}
             style={{ color: "#527dff" }}
@@ -111,7 +112,7 @@ export const GenerateLogMessage = ({ log }: GenerateLogMessageForCardProps) => {
           >
             {" "}
             {boardTitle}
-          </span>
+          </span>{" "}
           board.
         </>
       );
@@ -120,8 +121,8 @@ export const GenerateLogMessage = ({ log }: GenerateLogMessageForCardProps) => {
       const [ListTitle, updateField, boardId, boardTitle] = entityTitle;
       return (
         <>
-          renamed the {entityType.toLowerCase()} {updateField} to "{ListTitle}"
-          within the
+          renamed the {entityType.toLowerCase()} {updateField} to &#34;
+          {ListTitle}&#34; within the
           <span
             onClick={() => router.push(`/b/${boardId}`)}
             style={{ color: "#527dff" }}
@@ -138,7 +139,7 @@ export const GenerateLogMessage = ({ log }: GenerateLogMessageForCardProps) => {
       const [ListTitle, boardTitle, boardId] = entityTitle;
       return (
         <>
-          deleted the {entityType.toLowerCase()} "{ListTitle}" from
+          deleted the {entityType.toLowerCase()} &#34;{ListTitle}&#34; from
           <span
             onClick={() => router.push(`/b/${boardId}`)}
             style={{ color: "#527dff" }}
@@ -146,7 +147,7 @@ export const GenerateLogMessage = ({ log }: GenerateLogMessageForCardProps) => {
           >
             {" "}
             {boardTitle}
-          </span>
+          </span>{" "}
           board.
         </>
       );
@@ -155,7 +156,7 @@ export const GenerateLogMessage = ({ log }: GenerateLogMessageForCardProps) => {
       const [ListTitle, listToCopyTitle, boardTitle, boardId] = entityTitle;
       return (
         <>
-          copied the {entityType.toLowerCase()} "{ListTitle}" from{" "}
+          copied the {entityType.toLowerCase()} &#34;{ListTitle}&#34; from{" "}
           {listToCopyTitle} in
           <span
             onClick={() => router.push(`/b/${boardId}`)}
@@ -164,7 +165,141 @@ export const GenerateLogMessage = ({ log }: GenerateLogMessageForCardProps) => {
           >
             {" "}
             {boardTitle}
+          </span>{" "}
+          board.
+        </>
+      );
+    }
+  }
+  // card log template
+  if (entityType === ENTITY_TYPE.CARD) {
+    if (action === ACTION.CREATE) {
+      const [cardTitle, listTitle, boardTitle, boardId] = entityTitle;
+
+      const onHandleCard = () => {
+        router.push(`/b/${boardId}`);
+        onOpen(log.entityId);
+      };
+      return (
+        <>
+          added {entityType.toLowerCase()}{" "}
+          <span
+            onClick={onHandleCard}
+            style={{ color: "#527dff" }}
+            className="hover:underline cursor-pointer"
+          >
+            {cardTitle}
+          </span>{" "}
+          in list {listTitle} in the
+          <span
+            onClick={() => router.push(`/b/${boardId}`)}
+            style={{ color: "#527dff" }}
+            className="hover:underline cursor-pointer"
+          >
+            {" "}
+            {boardTitle}
+          </span>{" "}
+          board.
+        </>
+      );
+    }
+    //  update are left
+    if (action === ACTION.DELETE) {
+      const [cardTitle, listTitle, boardTitle, boardId] = entityTitle;
+      return (
+        <>
+          deleted the {entityType.toLowerCase()} &#34;{cardTitle}&#34; from list{" "}
+          {listTitle} from
+          <span
+            onClick={() => router.push(`/b/${boardId}`)}
+            style={{ color: "#527dff" }}
+            className="hover:underline cursor-pointer"
+          >
+            {" "}
+            {boardTitle}
+          </span>{" "}
+          board.
+        </>
+      );
+    }
+
+    if (action === ACTION.COPIED) {
+      const [cardTitle, parentCardId, newListTitle, boardTitle, boardId] =
+        entityTitle;
+
+      const onHandleNewCard = () => {
+        router.push(`/b/${boardId}`);
+        onOpen(log.entityId);
+      };
+      const onHandleCopyCard = () => {
+        router.push(`/b/${boardId}`);
+        onOpen(parentCardId);
+      };
+      return (
+        <>
+          copied{" "}
+          <span
+            onClick={onHandleNewCard}
+            style={{ color: "#527dff" }}
+            className="hover:underline cursor-pointer"
+          >
+            {cardTitle}
+          </span>{" "}
+          {entityType.toLowerCase()} from{" "}
+          <span
+            onClick={onHandleCopyCard}
+            style={{ color: "#527dff" }}
+            className="hover:underline cursor-pointer"
+          >
+            {cardTitle}
           </span>
+          in list {newListTitle} in
+          <span
+            onClick={() => router.push(`/b/${boardId}`)}
+            style={{ color: "#527dff" }}
+            className="hover:underline cursor-pointer"
+          >
+            {" "}
+            {boardTitle}
+          </span>{" "}
+          board.
+        </>
+      );
+    }
+    if (action === ACTION.MOVED) {
+      const [
+        movedCardTitle,
+        newListTitle,
+        previousListTitle,
+        boardTitle,
+        boardId,
+      ] = entityTitle;
+
+      const onHandleNewCard = () => {
+        router.push(`/b/${boardId}`);
+        onOpen(log.entityId);
+      };
+
+      return (
+        <>
+          moved{" "}
+          <span
+            onClick={onHandleNewCard}
+            style={{ color: "#527dff" }}
+            className="hover:underline cursor-pointer"
+          >
+            {movedCardTitle}
+          </span>{" "}
+          {entityType.toLowerCase()} from list {previousListTitle} to{" "}
+          {newListTitle} in
+          <span
+            onClick={() => router.push(`/b/${boardId}`)}
+            style={{ color: "#527dff" }}
+            className="hover:underline cursor-pointer"
+          >
+            {" "}
+            {boardTitle}
+          </span>{" "}
           board.
         </>
       );

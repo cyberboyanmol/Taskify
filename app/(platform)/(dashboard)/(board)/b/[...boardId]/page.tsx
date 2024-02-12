@@ -30,6 +30,7 @@ const BoardIdPage = async ({ params }: BoardIdPageProps) => {
           order: "asc",
         },
       },
+      board: true,
     },
     orderBy: {
       order: "asc",

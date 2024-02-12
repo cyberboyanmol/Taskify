@@ -38,7 +38,7 @@ export const modules = {
 export const Description = ({ data }: DescriptionProps) => {
   const queryClient = useQueryClient();
   const params = useParams();
-  const [description, setDescription] = useState(data.description);
+
   const [isEditing, setIsEditing] = useState(false);
   const textAreaRef = useRef<ReactQuill | null>(null);
   const formRef = useRef<ElementRef<"form">>(null);
@@ -71,7 +71,6 @@ export const Description = ({ data }: DescriptionProps) => {
 
       toast.success(`Card "${data.title}" updated`);
       disableEditing();
-      setDescription(data.description);
     },
     onError: (error) => {
       toast.error(error);
@@ -94,13 +93,13 @@ export const Description = ({ data }: DescriptionProps) => {
       <AlignLeft
         className={cn(
           "h-6 w-6   text-neutral-700",
-          description ? "mt-1" : "mt-0"
+          data.description ? "mt-1" : "mt-0"
         )}
       />
       <div className="w-full">
         <div className="flex items-center justify-between   ">
           <p className="font-semibold text-neutral-700 mb-2 ">Description</p>
-          {description !== "" && description && !isEditing && (
+          {data.description !== "" && data.description && !isEditing && (
             <Button
               variant={"gray"}
               size={"sm"}
@@ -119,7 +118,7 @@ export const Description = ({ data }: DescriptionProps) => {
               className="w-full mt-2 focus-visible:border-black focus-visible:border-2"
               id="description"
               placeholder="Add a more detailed description."
-              defaultValue={description || undefined}
+              defaultValue={data.description || undefined}
               ref={textAreaRef}
             />
             <div className="flex items-start gap-x-2">
@@ -139,8 +138,8 @@ export const Description = ({ data }: DescriptionProps) => {
             onClick={enableEditing}
             className="min-h-[78px] w-full bg-neutral-100 text-sm font-normal rounded-md py-3 px-4"
           >
-            {description ? (
-              <DescriptionContent description={description} />
+            {data.description ? (
+              <DescriptionContent description={data.description} />
             ) : (
               "Add a more detailed description.."
             )}

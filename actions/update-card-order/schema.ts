@@ -14,4 +14,5 @@ export const UpdateCardOrder = z.object({
   newListTitle: z.optional(z.string()),
   movedCardId: z.optional(z.string()),
   movedCardTitle: z.optional(z.string()),
+  boardTitle: z.optional(z.string()),
 });

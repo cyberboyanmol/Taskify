@@ -3,7 +3,10 @@ import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET(
+  req: Request,
+  { params }: { params: { orgId: string } }
+) {
   try {
     const { userId, orgId } = auth();
 
@@ -16,7 +19,7 @@ export async function GET(req: Request) {
 
     const auditLogs = await db.auditLog.findMany({
       where: {
-        orgId,
+        orgId: params.orgId,
       },
       orderBy: {
         createdAt: "desc",

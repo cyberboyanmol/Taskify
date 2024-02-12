@@ -11,7 +11,7 @@ interface ActivityItemProps {
 }
 export const ActivityItem = ({ data, page }: ActivityItemProps) => {
   return (
-    <li className="flex items-center gap-x-2">
+    <li className="flex items-center  gap-x-2">
       <Avatar className="h-10 w-10">
         <AvatarImage
           className="w-full h-full object-cover"

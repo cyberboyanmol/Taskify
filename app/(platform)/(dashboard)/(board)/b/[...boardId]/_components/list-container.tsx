@@ -132,10 +132,13 @@ export const ListContainer = ({ boardId, data }: ListContainerProps) => {
           movedCardId: movedCard.id,
           newListTitle: destinationList.title,
           movedCardTitle: movedCard.title,
+          boardTitle: destinationList.board.title,
         });
       }
     }
   };
+
+  console.log(data);
   return (
     <DragDropContext onDragEnd={onDragEndHandler}>
       <Droppable droppableId="lists" type="list" direction="horizontal">

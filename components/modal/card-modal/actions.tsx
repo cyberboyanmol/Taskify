@@ -16,7 +16,6 @@ export const Actions = ({ data }: ActionsProps) => {
   const params = useParams();
   const cardModal = useCardModalStore();
 
-  
   const { execute: executeDeleteCard, isLoading: isLoadingDeleteCard } =
     useAction(deleteCard, {
       onSuccess: (data) => {
@@ -60,7 +59,7 @@ export const Actions = ({ data }: ActionsProps) => {
   );
 };
 
-Actions.Skeleton = function () {
+Actions.Skeleton = function ActionsSkeleton() {
   return (
     <div className="space-y-2 mt-2">
       <Skeleton className="w-20 h-4 bg-neutral-200" />

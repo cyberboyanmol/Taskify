@@ -23,6 +23,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     newListTitle,
     movedCardId,
     movedCardTitle,
+    boardTitle,
   } = data;
   let updatedCards;
 
@@ -56,6 +57,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
           movedCardTitle,
           newListTitle,
           previousListTitle,
+          boardTitle,
+          boardId,
         ] as string[],
         action: ACTION.MOVED,
         entityType: ENTITY_TYPE.CARD,
