@@ -14,6 +14,7 @@ import { useAction } from "@/hooks/use-action";
 import { updateCard } from "@/actions/update-card";
 import { toast } from "sonner";
 import { DescriptionContent } from "./descriptionContent";
+import { cn } from "@/lib/utils";
 
 interface DescriptionProps {
   data: CardWithList;
@@ -87,10 +88,15 @@ export const Description = ({ data }: DescriptionProps) => {
 
   return (
     <div className="flex  items-start gap-x-3 w-full">
-      <AlignLeft className="h-6 w-6   text-neutral-700" />
+      <AlignLeft
+        className={cn(
+          "h-6 w-6   text-neutral-700",
+          description ? "mt-1" : "mt-0"
+        )}
+      />
       <div className="w-full">
-        <div className="flex items-start justify-between   ">
-          <p className="font-semibold text-neutral-700 ">Description</p>
+        <div className="flex items-center justify-between   ">
+          <p className="font-semibold text-neutral-700 mb-2 ">Description</p>
           {description !== "" && description && !isEditing && (
             <Button
               variant={"gray"}
