@@ -68,18 +68,20 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       },
       include: {
         cards: true,
+        board: true,
       },
     });
 
     await createAuditLog({
       entityId: list.id,
       entityType: ENTITY_TYPE.LIST,
-      entityTitle: [list.title, listToCopy.title],
+      entityTitle: [list.title, listToCopy.title, list.board.title, boardId],
       action: ACTION.COPIED,
     });
 
     // new List Name
     const newListTitle = list.title;
+    const boardTitle = list.board.title;
 
     // creating the logs for all new copied cards
     list.cards.map(async (card) => {
@@ -87,7 +89,13 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         entityId: card.id,
         entityType: ENTITY_TYPE.CARD,
         action: ACTION.COPIED,
-        entityTitle: [card.title, card.parentCardId as string, newListTitle],
+        entityTitle: [
+          card.title,
+          card.parentCardId as string,
+          newListTitle,
+          boardTitle,
+          boardId,
+        ],
       });
     });
   } catch (error) {

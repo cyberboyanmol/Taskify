@@ -50,11 +50,14 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         boardId,
         order: newOrder,
       },
+      include: {
+        board: true,
+      },
     });
 
     await createAuditLog({
       entityId: list.id,
-      entityTitle: [list.title],
+      entityTitle: [list.title, list.board.title, boardId],
       action: ACTION.CREATE,
       entityType: ENTITY_TYPE.LIST,
     });

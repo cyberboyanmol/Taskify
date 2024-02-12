@@ -1,13 +1,15 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { useCardModalStore } from "@/hooks/use-card-modal";
-import { GenerateLogMessageForCard } from "@/components/generate-log-message";
+import {
+  GenerateLogMessage,
+  GenerateLogMessageForCard,
+} from "@/components/generate-log-message";
 import { AuditLog } from "@prisma/client";
 import { format } from "date-fns";
 interface ActivityItemProps {
   data: AuditLog;
+  page?: boolean;
 }
-export const ActivityItem = ({ data }: ActivityItemProps) => {
-  const onOpen = useCardModalStore((state) => state.onOpen);
+export const ActivityItem = ({ data, page }: ActivityItemProps) => {
   return (
     <li className="flex items-center gap-x-2">
       <Avatar className="h-10 w-10">
@@ -23,7 +25,11 @@ export const ActivityItem = ({ data }: ActivityItemProps) => {
           <span className="font-bold  text-md capitalize text-[#0B1D51]">
             {data.userName.replaceAll("null", "")}
           </span>
-          <GenerateLogMessageForCard log={data} />
+          {page ? (
+            <GenerateLogMessage log={data} />
+          ) : (
+            <GenerateLogMessageForCard log={data} />
+          )}
         </p>
         {/* logs time */}
         <p className="text-xs text-muted-foreground">

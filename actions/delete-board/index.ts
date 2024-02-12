@@ -6,6 +6,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { CreateSafeAction } from "@/lib/create-safe-action";
 import { DeleteBoard } from "./schema";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId, orgId } = auth();
@@ -33,6 +35,12 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     };
   }
 
+  await createAuditLog({
+    entityId: board.id,
+    entityTitle: [board.title],
+    entityType: ENTITY_TYPE.BOARD,
+    action: ACTION.DELETE,
+  });
   revalidatePath(`/organization/${orgId}`);
   redirect(`/organization/${orgId}`);
 };

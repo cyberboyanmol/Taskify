@@ -29,6 +29,9 @@ const handler = async (data: InputType): Promise<ReturnType> => {
           orgId,
         },
       },
+      include: {
+        board: true,
+      },
     });
     if (!list) {
       return {
@@ -63,7 +66,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     await createAuditLog({
       entityId: card.id,
       entityType: ENTITY_TYPE.CARD,
-      entityTitle: [card.title, list.title],
+      entityTitle: [card.title, list.title, list.board.title, boardId],
       action: ACTION.CREATE,
     });
   } catch (error) {
