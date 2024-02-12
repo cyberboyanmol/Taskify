@@ -19,7 +19,7 @@ interface DescriptionProps {
   data: CardWithList;
 }
 
-const modules = {
+export const modules = {
   toolbar: {
     container: [
       [{ header: [false, 1, 2, 3, 4, 5, 6] }],
@@ -87,9 +87,21 @@ export const Description = ({ data }: DescriptionProps) => {
 
   return (
     <div className="flex  items-start gap-x-3 w-full">
-      <AlignLeft className="h-6 w-6  text-neutral-700" />
+      <AlignLeft className="h-6 w-6   text-neutral-700" />
       <div className="w-full">
-        <p className="font-semibold text-neutral-700 mb-2">Description</p>
+        <div className="flex items-start justify-between   ">
+          <p className="font-semibold text-neutral-700 ">Description</p>
+          {description !== "" && description && !isEditing && (
+            <Button
+              variant={"gray"}
+              size={"sm"}
+              className="text-semibold mb-2 focus:ring-transparent"
+              onClick={enableEditing}
+            >
+              Edit
+            </Button>
+          )}
+        </div>
         {isEditing ? (
           <form ref={formRef} action={onSubmit} className="space-y-2">
             <ReactQuill

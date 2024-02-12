@@ -25,6 +25,8 @@ body,
 .board::-webkit-scrollbar {
   height: 8px;
 }
+
+
 .Scrollable::-webkit-scrollbar-track,
 .modalInputScrollbar::-webkit-scrollbar-track {
   background: #f1f2f4;

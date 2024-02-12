@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Header } from "./header";
 import { Description } from "./description";
 import { useEffect, useRef } from "react";
+import { Actions } from "./actions";
 
 export const CardModal = () => {
   const id = useCardModalStore((state) => state.id);
@@ -20,8 +21,6 @@ export const CardModal = () => {
     queryKey: ["card", id],
     queryFn: () => fetcher(`/api/cards/${id}`),
   });
-
-
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -40,6 +39,7 @@ export const CardModal = () => {
               )}
             </div>
           </div>
+          {!cardData ? <Actions.Skeleton /> : <Actions data={cardData} />}
         </div>
       </DialogContent>
     </Dialog>
