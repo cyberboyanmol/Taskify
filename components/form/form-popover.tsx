@@ -18,6 +18,7 @@ import { X } from "lucide-react";
 import { ElementRef, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { FormPicker } from "./form-picker";
+import { useSubscription } from "@/hooks/use-subscription-modal";
 
 interface FormPopoverProps {
   children: React.ReactNode;
@@ -31,6 +32,7 @@ export const FormPopover: React.FC<FormPopoverProps> = ({
   align,
   sideOffset = 0,
 }) => {
+  const subscription = useSubscription();
   const router = useRouter();
   const closeRef = useRef<ElementRef<"button">>(null);
   const { fieldErrors, execute } = useAction(createBoard, {
@@ -41,7 +43,7 @@ export const FormPopover: React.FC<FormPopoverProps> = ({
     },
     onError: (error) => {
       toast.error(error);
-      //   proModal.onOpen();
+      subscription.onOpen();
     },
   });
   const onSubmit = (formData: FormData) => {

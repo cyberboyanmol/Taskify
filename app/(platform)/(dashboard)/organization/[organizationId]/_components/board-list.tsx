@@ -4,13 +4,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MAX_FREE_BOARDS } from "@/constants";
 import { getAvailableboardCount } from "@/lib/org-limit";
 import { db } from "@/lib/prisma-client";
+import { checkStripeSubscription } from "@/lib/stripe-subscription";
 import { auth } from "@clerk/nextjs";
 import { HelpCircle, User2 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export const BoardList = async () => {
-  const isPro = false;
+  const isPro = await checkStripeSubscription();
   const { orgId } = auth();
   if (!orgId) {
     return redirect("/select-org");
