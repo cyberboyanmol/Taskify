@@ -1,6 +1,8 @@
 import { FormPopover } from "@/components/form/form-popover";
 import { Hint } from "@/components/hint";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MAX_FREE_BOARDS } from "@/constants";
+import { getAvailableboardCount } from "@/lib/org-limit";
 import { db } from "@/lib/prisma-client";
 import { auth } from "@clerk/nextjs";
 import { HelpCircle, User2 } from "lucide-react";
@@ -13,9 +15,8 @@ export const BoardList = async () => {
   if (!orgId) {
     return redirect("/select-org");
   }
-  const MAX_FREE_BOADRS = 5;
-  const availableCount = 1;
 
+  const availableCount = await getAvailableboardCount();
   const boards = await db.board.findMany({
     where: {
       orgId,
@@ -57,7 +58,7 @@ export const BoardList = async () => {
             <span className="text-xs">
               {isPro
                 ? "Unlimited"
-                : `${MAX_FREE_BOADRS - availableCount} remaining`}
+                : `${MAX_FREE_BOARDS - availableCount} remaining`}
             </span>
             <Hint
               description="Free Workspace can have up to 5 open boards. For unlimited boards upgrade this workspace "

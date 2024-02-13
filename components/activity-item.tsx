@@ -23,7 +23,7 @@ export const ActivityItem = ({ data, page }: ActivityItemProps) => {
         {/* logs */}
         <p className="text-sm text-muted-foreground">
           <span className="font-bold  text-md capitalize text-[#0B1D51]">
-            {data.userName.replaceAll("null", "")}
+            {data.userName.replaceAll("null", "")}{" "}
           </span>
           {page ? (
             <GenerateLogMessage log={data} />

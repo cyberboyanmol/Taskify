@@ -8,10 +8,12 @@ import { CreateSafeAction } from "@/lib/create-safe-action";
 import { DeleteBoard } from "./schema";
 import { createAuditLog } from "@/lib/create-audit-log";
 import { ACTION, ENTITY_TYPE } from "@prisma/client";
+import { decrementAvailableCount } from "@/lib/org-limit";
+import { checkStripeSubscription } from "@/lib/stripe-subscription";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId, orgId } = auth();
-
+  const isPro = await checkStripeSubscription();
   if (!userId || !orgId) {
     return {
       error: "Unauthorized",
@@ -29,6 +31,10 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         orgId,
       },
     });
+
+    if (!isPro) {
+      await decrementAvailableCount();
+    }
   } catch (error) {
     return {
       error: "Failed to Delete Board.",
