@@ -22,7 +22,7 @@ body,
 .modalScrollbar::-webkit-scrollbar {
   width: 5px;
 }
-.board::-webkit-scrollbar {
+body::-webkit-scrollbar {
   height: 8px;
 }
 
@@ -52,11 +52,11 @@ body,
 }
 
 .list:hover .Scrollable::-webkit-scrollbar-track,
-.board::-webkit-scrollbar-track {
+body::-webkit-scrollbar-track {
   background: #fff;
 }
 .list:hover .Scrollable::-webkit-scrollbar-thumb,
-.board::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
 .modalInputScrollbar::-webkit-scrollbar-thumb {
   background: grey;
 }

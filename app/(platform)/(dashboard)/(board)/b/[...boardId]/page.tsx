@@ -1,8 +1,9 @@
 import { db } from "@/lib/prisma-client";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { ListContainer } from "./_components/list-container";
+import { cn } from "@/lib/utils";
 
 interface BoardIdPageProps {
   params: {
@@ -36,8 +37,9 @@ const BoardIdPage = async ({ params }: BoardIdPageProps) => {
       order: "asc",
     },
   });
+
   return (
-    <div className="h-full p-4 overflow-x-auto board">
+    <div className={cn("h-full p-4  ")}>
       <ListContainer boardId={params.boardId[0]} data={lists} />
     </div>
   );
