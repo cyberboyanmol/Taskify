@@ -4,14 +4,14 @@ import { List } from "@prisma/client";
 import { ListFrom } from "./list-form";
 import { useEffect, useState } from "react";
 import { ListItem } from "./list-item";
-// import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { reorder } from "@/lib/utils";
+import { cn, reorder } from "@/lib/utils";
 import { isEmpty } from "lodash";
 import { useAction } from "@/hooks/use-action";
 import { updateCardOrder } from "@/actions/update-card-order";
 import { toast } from "sonner";
 import { updateListOrder } from "@/actions/update-list-order";
+import { useMediaQuery } from "usehooks-ts";
 interface ListContainerProps {
   boardId: string;
   data: ListWithCards[];
@@ -139,23 +139,27 @@ export const ListContainer = ({ boardId, data }: ListContainerProps) => {
   };
 
   console.log(data);
+  const matches = useMediaQuery("(min-width: 1024px)");
+  console.log(matches);
   return (
     <DragDropContext onDragEnd={onDragEndHandler}>
       <Droppable droppableId="lists" type="list" direction="horizontal">
         {(provided, snapshot) => (
-          <ol
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-            className="flex gap-x-3 h-full "
-          >
-            {orderedData.map((list, index) => {
-              return <ListItem key={list.id} index={index} data={list} />;
-            })}
-            {provided.placeholder}
+          <div className={cn("h-full", !matches ? "overflow-x-auto" : "")}>
+            <ol
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className="flex gap-x-3 h-full "
+            >
+              {orderedData.map((list, index) => {
+                return <ListItem key={list.id} index={index} data={list} />;
+              })}
+              {provided.placeholder}
 
-            <ListFrom />
-            <div className="flex-shrink-0 w-1" />
-          </ol>
+              <ListFrom />
+              <div className="flex-shrink-0 w-1" />
+            </ol>
+          </div>
         )}
       </Droppable>
     </DragDropContext>

@@ -1,7 +1,6 @@
 import { useCardModalStore } from "@/hooks/use-card-modal";
 import { cn } from "@/lib/utils";
 import { Draggable } from "@hello-pangea/dnd";
-// import { Draggable } from "react-beautiful-dnd";
 import { Card } from "@prisma/client";
 
 interface CardItemProps {
