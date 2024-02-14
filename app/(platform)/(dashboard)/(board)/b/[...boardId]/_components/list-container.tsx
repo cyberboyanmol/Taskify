@@ -140,16 +140,24 @@ export const ListContainer = ({ boardId, data }: ListContainerProps) => {
 
   console.log(data);
   const matches = useMediaQuery("(min-width: 1024px)");
-  console.log(matches);
+  // console.log(matches);
+
   return (
     <DragDropContext onDragEnd={onDragEndHandler}>
       <Droppable droppableId="lists" type="list" direction="horizontal">
         {(provided, snapshot) => (
-          <div className={cn("h-full", !matches ? "overflow-x-auto" : "")}>
+          <div
+            className={cn(
+              "absolute p-4  top-0 bottom-0 left-0 right-0 overflow-x-auto  ",
+              !matches ? "overflow-x-auto" : ""
+            )}
+          >
             <ol
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="flex gap-x-3 h-full "
+              className="flex gap-x-3 h-full  "
+              data-drag-scroll-enabled="true"
+              data-auto-scrollable="true"
             >
               {orderedData.map((list, index) => {
                 return <ListItem key={list.id} index={index} data={list} />;

@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 
 import React from "react";
 import { BoardNavbar } from "./_components/board-navbar";
+import { Navigation } from "./_components/navigation";
 
 export async function generateMetadata({
   params,
@@ -53,14 +54,14 @@ const BoardIdLayout = async ({
     notFound();
   }
   return (
-    <div className="relative h-full ">
+    <div className="relative w-full h-full  pt-14 ">
       <div
         style={{ backgroundImage: `url(${board.imageFullUrl})` }}
         className="absolute lg:fixed inset-0 bg-no-repeat bg-cover lg:bg-cover bg-center "
       />
       <div className="absolute lg:fixed inset-0 bg-black/10" />
-      <BoardNavbar data={board} />
-      <main className="relative pt-28   h-full">{children}</main>
+
+      <Navigation data={board}>{children}</Navigation>
     </div>
   );
 };
