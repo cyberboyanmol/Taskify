@@ -87,6 +87,7 @@ export const Description = ({ data }: DescriptionProps) => {
       description,
     });
   };
+  console.log(textAreaRef.current?.value)
 
   return (
     <div className="flex  items-start gap-x-3 w-full">

@@ -1,18 +1,31 @@
 import { ListWithCards } from "@/types";
 import { ListWrapper } from "./list-wrapper";
 import { ListHeader } from "./list-header";
-import { ElementRef, useRef, useState } from "react";
+import { ElementRef, useMemo, useRef, useState } from "react";
 import { CardForm } from "./card-form";
 import { cn } from "@/lib/utils";
 import { CardItem } from "./card-item";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Card, List } from "@prisma/client";
 interface ListItemProps {
   data: ListWithCards;
-  index: number;
+  children: React.ReactNode;
 }
 
-export const ListItem = ({ index, data }: ListItemProps) => {
+export const ListItem = ({ data, children }: ListItemProps) => {
   const textAreaRef = useRef<ElementRef<"textarea">>(null);
+  const cardsId = data.cards.map((card) => card.id);
+
+  // const cardsId = useMemo(() => {
+  //   return data.cards.map((card) => card.id);
+  // }, [data]);
   const [isEditing, setIsEditing] = useState(false);
   const disableEditing = () => {
     setIsEditing(false);
@@ -24,58 +37,62 @@ export const ListItem = ({ index, data }: ListItemProps) => {
     });
   };
 
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: data.id,
+    data: {
+      type: "list",
+      list: data,
+    },
+  });
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
   const windowHeight = window.innerHeight;
   const headerHeight = 240;
   const formHeight = isEditing ? 100 : 0;
   const availableHeight = windowHeight - headerHeight - formHeight;
+
   return (
-    <Draggable draggableId={data.id} index={index}>
-      {(provided, snapshot) => (
-        <li
-          {...provided.draggableProps}
-          ref={provided.innerRef}
-          className={cn(
-            "shrink-0 h-full w-[272px] select-none list ",
-            snapshot.isDragging ? "opacity-70" : "opacity-100"
-          )}
+    <li
+      ref={setNodeRef}
+      {...attributes}
+      style={style}
+      className={cn("shrink-0 h-full list-none w-[272px] select-none list ")}
+    >
+      <div
+        {...listeners}
+        className="w-full  rounded-lg bg-[#f1f2f4] shadow-md pb-2"
+      >
+        <ListHeader onAddCard={enableEditing} data={data} />
+        <div
+          style={{ maxHeight: `${availableHeight}px` }}
+          className="overflow-y-auto Scrollable"
         >
-          <div
-            {...provided.dragHandleProps}
-            className="w-full  rounded-lg bg-[#f1f2f4] shadow-md pb-2"
+          <ol
+            className={cn(
+              "mx-1 h-full px-1 py-0.5 flex list-none flex-col gap-y-2",
+              data.cards.length > 0 ? "mt-2" : "mt-0"
+            )}
           >
-            <ListHeader onAddCard={enableEditing} data={data} />
-            <div
-              style={{ maxHeight: `${availableHeight}px` }}
-              className="overflow-y-auto Scrollable"
-            >
-              <Droppable droppableId={data.id} type="card">
-                {(provided) => (
-                  <ol
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className={cn(
-                      "mx-1 h-full px-1 py-0.5 flex flex-col gap-y-2",
-                      data.cards.length > 0 ? "mt-2" : "mt-0"
-                    )}
-                  >
-                    {data.cards.map((card, index) => (
-                      <CardItem index={index} key={card.id} data={card} />
-                    ))}
-                    {provided.placeholder}
-                  </ol>
-                )}
-              </Droppable>
-            </div>
-            <CardForm
-              ref={textAreaRef}
-              enableEditing={enableEditing}
-              disableEditing={disableEditing}
-              isEditing={isEditing}
-              listId={data.id}
-            />
-          </div>
-        </li>
-      )}
-    </Draggable>
+            {children}
+          </ol>
+        </div>
+        <CardForm
+          ref={textAreaRef}
+          enableEditing={enableEditing}
+          disableEditing={disableEditing}
+          isEditing={isEditing}
+          listId={data.id}
+        />
+      </div>
+    </li>
   );
 };
