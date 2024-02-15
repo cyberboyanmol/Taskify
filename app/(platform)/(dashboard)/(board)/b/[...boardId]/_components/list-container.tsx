@@ -145,7 +145,7 @@ export const ListContainer = ({ boardId, data }: ListContainerProps) => {
     <DragDropContext onDragEnd={onDragEndHandler}>
       <Droppable droppableId="lists" type="list" direction="horizontal">
         {(provided, snapshot) => (
-          <div className={cn("h-full", !matches ? "overflow-x-auto" : "")}>
+          <div className={cn("h-full ")}>
             <ol
               {...provided.droppableProps}
               ref={provided.innerRef}
